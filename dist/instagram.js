@@ -1,3 +1,5 @@
+import { getDeviceReady, getMessage } from "./common.js";
+
 function tweakInstagram() {
   // ---- Variables start ----
   const Pages = Object.freeze({
@@ -9,8 +11,9 @@ function tweakInstagram() {
 
   let currentPage = Pages.MAIN;
   let lastPath;
+  let randomImage = null;
   let backgroundImage = null;
-  let imageRendered = false;
+  let imagesRendered = false;
   // ---- Variables end ----
 
   // ---- Navigation handling start ----
@@ -19,7 +22,7 @@ function tweakInstagram() {
     if (path === lastPath) return;
 
     lastPath = path;
-    imageRendered = false;
+    imagesRendered = false;
 
     if (path === Pages.MAIN.description) currentPage = Pages.MAIN;
     else if (path.startsWith(Pages.EXPLORE.description))
@@ -48,30 +51,31 @@ function tweakInstagram() {
   // ---- Message listener start ----
   window.addEventListener("message", (event) => {
     const image = event?.data?.image;
-    if (!image) return;
-
-    backgroundImage = image;
-    imageRendered = false; // allow re-render if a new image arrives
-    console.log("📸 Background image received");
+    const background = event?.data?.background;
+    if (image && background) {
+      randomImage = image;
+      backgroundImage = background;
+      imagesRendered = false;
+    }
   });
   // ---- Message listener end ----
 
   // ---- DOM modification ----
   function replaceMainSectionWithDora() {
     const isSettingsOpen = document.querySelector('svg[aria-label="Options"]');
-    if (currentPage === Pages.INBOX || isSettingsOpen || imageRendered) return;
+    if (currentPage === Pages.INBOX || isSettingsOpen || imagesRendered) return;
 
     const section = document.querySelector("section");
     if (!section) return;
 
     const parent = section.parentElement;
-    section.remove();
+    section.style.display = 'none';
 
     const waitForImage = setInterval(async () => {
-      if (!backgroundImage) return;
+      if (!randomImage || !backgroundImage) return;
       clearInterval(waitForImage);
 
-      imageRendered = true;
+      imagesRendered = true;
 
       // remove old wrapper if exists
       if (window.__doraBackgroundWrapper) {
@@ -81,32 +85,47 @@ function tweakInstagram() {
 
       const wrapper = document.createElement("div");
       Object.assign(wrapper.style, {
-        position: "fixed", // ✅ fills entire screen
+        position: "fixed",
         top: "0",
         left: "0",
         width: "100vw",
         height: "100vh",
         overflow: "hidden",
+        backgroundImage: `url(${backgroundImage})`, // ✅ use base64 image as background
+        backgroundSize: "cover", // ✅ fills screen
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        zIndex: "0",
       });
 
       const img = document.createElement("img");
-      img.src = backgroundImage;
-
+      img.src = randomImage;
       Object.assign(img.style, {
         width: "100%",
         height: "100%",
-        objectFit: "contain", // ✅ responsive & cropped
+        objectFit: "contain",
         transition: "opacity 700ms ease, transform 700ms ease",
         opacity: "0",
         transform: "translateY(8px)",
         display: "block",
+        position: "relative",
+        zIndex: "1",
+
+        // 💫 Core trick: create soft fade at the edges
+        maskImage:
+          "radial-gradient(circle at center, black 70%, transparent 100%)",
+        WebkitMaskImage:
+          "radial-gradient(circle at center, black 70%, transparent 100%)",
+
+        // ✨ add gentle glow to visually blur edges
+        filter: "drop-shadow(0 0 20px rgba(0,0,0,0.4))",
       });
 
       wrapper.appendChild(img);
       (parent || document.body).appendChild(wrapper);
       window.__doraBackgroundWrapper = wrapper;
+      section.remove()
 
-      // Wait for image decoding before fading in
       try {
         if (img.decode) await img.decode();
       } catch {}
@@ -118,7 +137,6 @@ function tweakInstagram() {
         }, 20);
       });
 
-      // ✅ Handle orientation and resizing
       function adjustWrapperSize() {
         wrapper.style.width = `${window.innerWidth}px`;
         wrapper.style.height = `${window.innerHeight}px`;
@@ -149,65 +167,29 @@ function tweakInstagram() {
   // ---- DOM observer end ----
 }
 
-// ---- Helper: Load random image ----
-async function loadRandomImage() {
-  const path = "static/dora";
-  try {
-    const response = await fetch(`${path}/meta.json`);
-    const names = await response.json();
-    if (!names?.length) return { image: null };
-
-    const randomName = names[Math.floor(Math.random() * names.length)];
-    const fileResponse = await fetch(`${path}/${randomName}`);
-    if (!fileResponse.ok) throw new Error(`Failed to fetch ${randomName}`);
-
-    const blob = await fileResponse.blob();
-    const base64 = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-
-    return { image: base64 };
-  } catch (err) {
-    console.error("Failed to load image:", err);
-    return { image: null };
+export async function loadInstagram() {
+  // Wait until both deviceReady and message exist
+  while (!getDeviceReady() || !getMessage()) {
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
-}
 
-// ---- Cordova integration ----
-document.addEventListener("deviceready", () => {
   const ref = cordova.InAppBrowser.open(
     "https://www.instagram.com/accounts/login/",
     "_blank",
-    "location=no,toolbar=no,hidden=no"
+    "location=no,toolbar=no,hidden=no,hardwareback=yes"
   );
 
-  ref.addEventListener("loadstop", async () => {
-    if (window.initialized) return;
-
+  ref.addEventListener("loadstop", () => {
     const code = `(${tweakInstagram.toString()})();`;
     ref.executeScript({ code });
 
-    const imageData = await loadRandomImage();
-    const messageJson = JSON.stringify(imageData);
-
     ref.executeScript({
       code: `
-        window.dispatchEvent(new MessageEvent('message', { data: ${messageJson} }));
+        window.dispatchEvent(new MessageEvent('message', { data: ${getMessage()} }));
       `,
     });
-
     window.initialized = true;
   });
 
-  ref.addEventListener("exit", () => {
-    console.log("📴 Instagram closed, exiting app...");
-    if (Capacitor?.Plugins?.App?.exitApp) {
-      Capacitor.Plugins.App.exitApp(); // ✅ closes Android app
-    } else {
-      alert(JSON.stringify(Capacitor.Plugins));
-    }
-  });
-});
+  ref.addEventListener("exit", () => {});
+}
