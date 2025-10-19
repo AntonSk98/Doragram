@@ -18,11 +18,6 @@ export function getMessage() {
 }
 
 export async function setAccount(account) {
-  const { value } = await Capacitor.Plugins.Preferences.get({ key: "account" });
-  if (value) {
-    return;
-  }
-
   await Capacitor.Plugins.Preferences.set({ key: "account", value: account });
 }
 

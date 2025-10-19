@@ -5,11 +5,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="game.css" />
+    <link rel="stylesheet" href="modal.css" />
     <script src="common.js" type="module"></script>
     <script src="instagram.js" type="module"></script>
     <script src="main.js" type="module"></script>
+    <script src="game.js" type="module"></script>
+    <script src="modal.js" type="module"></script>
   </head>
   <body>
+    <dialog id="accountModal">
+      <form method="dialog" id="accountForm">
+        <h2>Provide Instagram Account Name</h2>
+        <span class="note">Please enter your own Instagram username. This will be used to manage feature access.</span>
+        <input
+          type="text"
+          id="accountInput"
+          name="account"
+          placeholder="e.g. antonsk98"
+          required
+        />
+        <div class="buttons">
+          <button type="submit">Save</button>
+        </div>
+      </form>
+    </dialog>
     <div id="loadingOverlay">
       <div class="button-wrapper">
         <button id="loadInstagram" class="image-button">

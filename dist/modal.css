@@ -1,0 +1,46 @@
+dialog {
+  border: none;
+  border-radius: 1rem;
+  padding: 2rem;
+  background: #fff;
+  color: #333;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+  max-width: 320px;
+  width: 70vw;
+  text-align: center;
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+#accountForm input {
+  width: 100%;
+  padding: 0.6rem;
+  margin-top: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 2rem;
+  font-size: 1rem;
+}
+
+h2 {
+  color: #63763e;
+}
+
+#accountForm .buttons {
+  margin-top: 1.5rem;
+}
+
+#accountForm button {
+  padding: 0.6rem 1.2rem;
+  background: #63763e;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#accountForm button:hover {
+  background: #294634;
+}

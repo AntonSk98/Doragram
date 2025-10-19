@@ -1,0 +1,26 @@
+/* game.css */
+
+/* Circle → Image object */
+.circle {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  background: center / contain no-repeat url("static/dora/game.png");
+  box-shadow: 0 0 10px rgba(255, 200, 0, 0.4);
+  user-select: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.circle:active {
+  transform: scale(0.9);
+}
+
+.circle.remove {
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
