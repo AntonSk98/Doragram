@@ -1,4 +1,4 @@
-import { getDeviceReady, getMessage } from "./common.js";
+import { getDeviceReady, getMessage, getAccount } from "./common.js";
 
 function tweakInstagram() {
   // ---- Variables start ----
@@ -7,6 +7,8 @@ function tweakInstagram() {
     EXPLORE: Symbol("/explore"),
     REELS: Symbol("/reels"),
     INBOX: Symbol("/direct"),
+    EDIT_ACCOUNT: Symbol("/accounts/edit"),
+    MY_ACCOUNT: Symbol(window._account)
   });
 
   let currentPage = Pages.MAIN;
@@ -23,6 +25,7 @@ function tweakInstagram() {
 
     lastPath = path;
     imagesRendered = false;
+    
 
     if (path === Pages.MAIN.description) currentPage = Pages.MAIN;
     else if (path.startsWith(Pages.EXPLORE.description))
@@ -31,6 +34,12 @@ function tweakInstagram() {
       currentPage = Pages.REELS;
     else if (path.startsWith(Pages.INBOX.description))
       currentPage = Pages.INBOX;
+    else if (path.startsWith(Pages.EDIT_ACCOUNT.description)) {
+      currentPage = Pages.EDIT_ACCOUNT;
+    }
+    else if (path.includes(Pages.MY_ACCOUNT.description)) {
+      currentPage = Pages.MY_ACCOUNT;
+    }
   }
 
   // Patch history changes to detect navigation
@@ -52,6 +61,9 @@ function tweakInstagram() {
   window.addEventListener("message", (event) => {
     const image = event?.data?.image;
     const background = event?.data?.background;
+    if (imagesRendered) {
+      return;
+    }
     if (image && background) {
       randomImage = image;
       backgroundImage = background;
@@ -62,14 +74,19 @@ function tweakInstagram() {
 
   // ---- DOM modification ----
   function replaceMainSectionWithDora() {
-    const isSettingsOpen = document.querySelector('svg[aria-label="Options"]');
-    if (currentPage === Pages.INBOX || isSettingsOpen || imagesRendered) return;
+    if (
+      currentPage === Pages.INBOX ||
+      currentPage === Pages.EDIT_ACCOUNT ||
+      currentPage === Pages.MY_ACCOUNT ||
+      imagesRendered
+    )
+      return;
 
     const section = document.querySelector("section");
     if (!section) return;
 
     const parent = section.parentElement;
-    section.style.display = 'none';
+    section.style.display = "none";
 
     const waitForImage = setInterval(async () => {
       if (!randomImage || !backgroundImage) return;
@@ -124,7 +141,7 @@ function tweakInstagram() {
       wrapper.appendChild(img);
       (parent || document.body).appendChild(wrapper);
       window.__doraBackgroundWrapper = wrapper;
-      section.remove()
+      section.remove();
 
       try {
         if (img.decode) await img.decode();
@@ -173,6 +190,8 @@ export async function loadInstagram() {
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
 
+  const account = await getAccount();
+
   const ref = cordova.InAppBrowser.open(
     "https://www.instagram.com/accounts/login/",
     "_blank",
@@ -180,6 +199,7 @@ export async function loadInstagram() {
   );
 
   ref.addEventListener("loadstop", () => {
+    ref.executeScript({ code: `window._account = '${account}';` });
     const code = `(${tweakInstagram.toString()})();`;
     ref.executeScript({ code });
 

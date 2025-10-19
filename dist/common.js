@@ -17,6 +17,20 @@ export function getMessage() {
   return _message;
 }
 
+export async function setAccount(account) {
+  const { value } = await Capacitor.Plugins.Preferences.get({ key: "account" });
+  if (value) {
+    return;
+  }
+
+  await Capacitor.Plugins.Preferences.set({ key: "account", value: account });
+}
+
+export async function getAccount() {
+  const { value } = await Capacitor.Plugins.Preferences.get({ key: "account" });
+  return value;
+}
+
 export async function loadImage(fullPath) {
   try {
     const fileResponse = await fetch(fullPath);

@@ -3,6 +3,7 @@
     "@capacitor/android": "^7.4.3",
     "@capacitor/app": "^7.1.0",
     "@capacitor/core": "^7.4.3",
+    "@capacitor/preferences": "^7.0.2",
     "cordova-plugin-inappbrowser": "^6.0.0",
     "vite": "^7.1.7"
   },
