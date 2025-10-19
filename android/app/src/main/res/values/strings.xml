@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">doragram</string>
-    <string name="title_activity_main">doragram</string>
+    <string name="app_name">Doragram</string>
+    <string name="title_activity_main">Doragram</string>
     <string name="package_name">de.ansk98.doragram</string>
     <string name="custom_url_scheme">de.ansk98.doragram</string>
 </resources>

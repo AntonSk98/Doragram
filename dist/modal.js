@@ -8,7 +8,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   const account = await getAccount();
 
-  if (!account || true) {
+  if (!account) {
     accountModal.showModal();
   }
 
