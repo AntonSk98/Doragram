@@ -1,6 +1,16 @@
-import { getDeviceReady, getMessage, getAccount } from "./common.js";
+import {
+  getDeviceReady,
+  getMessage,
+  getAccount,
+  activateProcrastinationMode,
+  isProcrastinationModeActive,
+  deactivateProcrastinationMode,
+} from "./common.js";
 
 function tweakInstagram() {
+  // if (localStorage.getItem("procrastinationMode")) {
+  //   return;
+  // }
   // ---- Variables start ----
   const Pages = Object.freeze({
     MAIN: Symbol("/"),
@@ -8,8 +18,10 @@ function tweakInstagram() {
     REELS: Symbol("/reels"),
     INBOX: Symbol("/direct"),
     EDIT_ACCOUNT: Symbol("/accounts/edit"),
-    MY_ACCOUNT: Symbol(window._account)
+    MY_ACCOUNT: Symbol(window._account),
   });
+
+  let procrastinationModeRequiredClicks = 20;
 
   let currentPage = Pages.MAIN;
   let lastPath;
@@ -25,7 +37,6 @@ function tweakInstagram() {
 
     lastPath = path;
     imagesRendered = false;
-    
 
     if (path === Pages.MAIN.description) currentPage = Pages.MAIN;
     else if (path.startsWith(Pages.EXPLORE.description))
@@ -36,8 +47,7 @@ function tweakInstagram() {
       currentPage = Pages.INBOX;
     else if (path.startsWith(Pages.EDIT_ACCOUNT.description)) {
       currentPage = Pages.EDIT_ACCOUNT;
-    }
-    else if (path.includes(Pages.MY_ACCOUNT.description)) {
+    } else if (path.includes(Pages.MY_ACCOUNT.description)) {
       currentPage = Pages.MY_ACCOUNT;
     }
   }
@@ -138,6 +148,10 @@ function tweakInstagram() {
         filter: "drop-shadow(0 0 20px rgba(0,0,0,0.4))",
       });
 
+      img.addEventListener("click", () => {
+        activateProcrastinationModeIfReady();
+      });
+
       wrapper.appendChild(img);
       (parent || document.body).appendChild(wrapper);
       window.__doraBackgroundWrapper = wrapper;
@@ -163,6 +177,22 @@ function tweakInstagram() {
       window.addEventListener("resize", adjustWrapperSize);
       window.addEventListener("orientationchange", adjustWrapperSize);
     }, 300);
+  }
+
+  function activateProcrastinationModeIfReady() {
+    procrastinationModeRequiredClicks = procrastinationModeRequiredClicks - 1;
+    if (procrastinationModeRequiredClicks == 0) {
+      var messageObj = { my_message: "hi" };
+      var stringifiedMessageObj = JSON.stringify(messageObj);
+      webkit.messageHandlers.cordova_iab.postMessage(stringifiedMessageObj);
+      window.location.reload();
+      return;
+    }
+    if (procrastinationModeRequiredClicks < 5) {
+      alert(
+        `You are ${procrastinationModeRequiredClicks} clicks away before entering procrastination mode!`
+      );
+    }
   }
 
   // ---- UI cleanup start ----
@@ -198,7 +228,25 @@ export async function loadInstagram() {
     "location=no,toolbar=no,hidden=no,hardwareback=yes"
   );
 
+  let procrastinationAlertShown = false;
+
   ref.addEventListener("loadstop", () => {
+    if (isProcrastinationModeActive()) {
+      const procrastinationModeLimitInMinutes = 5;
+      if (!procrastinationAlertShown) {
+        alert(
+          `🧘 Welcome to Procrastination Mode!\n\nTo help you stay focused, Instagram will automatically close in ${procrastinationModeLimitInMinutes} minutes.`
+        );
+        setTimeout(() => {
+          alert(
+            "⏰ Time’s up! Procrastination Mode is ending now - stay focused out there!"
+          );
+          ref.close();
+        }, procrastinationModeLimitInMinutes * 60 * 1000);
+      }
+      procrastinationAlertShown = true;
+      return;
+    }
     ref.executeScript({ code: `window._account = '${account}';` });
     const code = `(${tweakInstagram.toString()})();`;
     ref.executeScript({ code });
@@ -211,5 +259,7 @@ export async function loadInstagram() {
     window.initialized = true;
   });
 
-  ref.addEventListener("exit", () => {});
+  ref.addEventListener("exit", () => deactivateProcrastinationMode());
+
+  ref.addEventListener("message", (a) => activateProcrastinationMode());
 }

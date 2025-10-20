@@ -1,5 +1,6 @@
 let _deviceReady = false;
 let _message = null;
+let _procrastinationModeActive = false;
 
 export function setDeviceReady(value) {
   _deviceReady = value;
@@ -15,6 +16,18 @@ export function getDeviceReady() {
 
 export function getMessage() {
   return _message;
+}
+
+export function activateProcrastinationMode() {
+  _procrastinationModeActive = true;
+}
+
+export function deactivateProcrastinationMode() {
+  _procrastinationModeActive = false;
+}
+
+export function isProcrastinationModeActive() {
+  return _procrastinationModeActive;
 }
 
 export async function setAccount(account) {
