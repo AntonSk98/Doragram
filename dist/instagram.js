@@ -188,7 +188,7 @@ function tweakInstagram() {
       window.location.reload();
       return;
     }
-    if (procrastinationModeRequiredClicks < 5) {
+    if (procrastinationModeRequiredClicks <= 5 && procrastinationModeRequiredClicks >= 0) {
       alert(
         `You are ${procrastinationModeRequiredClicks} clicks away before entering procrastination mode!`
       );
