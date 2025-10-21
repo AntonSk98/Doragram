@@ -2,3 +2,5 @@ node_modules
 baselineProfiles
 output-metadata.json
 keystore.jks
+android/app/build/
+android/build/
