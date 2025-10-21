@@ -1,6 +1,6 @@
 # 🐾 Welcome to **Doragram!**
 
-Doragram is an Android application with one simple mission — **to help you save time!**
+Doragram is an Android application with one simple mission - **to help you save time!**
 
 How often have you caught yourself endlessly scrolling through Reels or suggested videos on Instagram instead of doing something meaningful? Since Instagram doesn’t offer a way to disable these distractions, the idea for Doragram was born. Instead of Reels or Explore feeds, Doragram replaces those sections with charming, cartoon-like pictures of our beloved dog **Dora**. 🐶
 
@@ -19,7 +19,7 @@ If you feel like relaxing for a bit, you can pop the little bubbles with Dora’
 
 ![Dora chilling in the garden](/expose/welcome_page.png "Dora - your productivity buddy 🐾")
 
-Once you tap on the seated Dora, Instagram will load — but with a twist:
+Once you tap on the seated Dora, Instagram will load - but with a twist:
 
 - The **Reels** and **Explore** tabs are disabled.  
 - Even if someone shares a reel link with you, it won’t open.  
@@ -32,7 +32,7 @@ Everything is designed to help you value your time while keeping essential featu
 
 ## ⏰ Still Feel Like Procrastinating?
 
-Totally understandable — we’ve all been there!  
+Totally understandable - we’ve all been there!  
 If you *really* want to browse Instagram as usual, tap Dora’s image **20 times** to activate **Procrastination Mode**.  
 
 In this mode:
@@ -57,7 +57,7 @@ Doragram then injects custom **JavaScript** and **CSS** at runtime to hide unnec
 
 ### 🔒 Is It Secure?
 Absolutely. Doragram doesn’t store or transmit any personal data.  
-There’s **no backend** — everything runs locally on your device.
+There’s **no backend** - everything runs locally on your device.
 
 ---
 
@@ -93,4 +93,4 @@ More details: [Capacitor Assets Guide](https://capacitorjs.com/docs/guides/splas
 ## ⚠️ Note
 Doragram relies on the desktop web version of Instagram, which comes with its natural limitations compared to the mobile app.
 
-### Made with ❤️ and a lot of Dora’s charm. Stay focused — Dora believes in you! 🐕✨
+<h2><strong>Made with ❤️ and a lot of Dora’s charm. Stay focused - Dora believes in you! 🐕✨</strong></h2>
