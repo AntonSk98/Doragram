@@ -1,10 +1,11 @@
 import { getAccount, setAccount } from "./common.js";
 
 // Check for cached Instagram account name
-window.addEventListener('DOMContentLoaded', async () => {
-  const accountModal = document.getElementById('accountModal');
-  const accountInput = document.getElementById('accountInput');
-  const accountForm = document.getElementById('accountForm');
+// If not cached yet opens up a modal window prompting a user to provide the profile
+window.addEventListener("DOMContentLoaded", async () => {
+  const accountModal = document.getElementById("accountModal");
+  const accountInput = document.getElementById("accountInput");
+  const accountForm = document.getElementById("accountForm");
 
   const account = await getAccount();
 
@@ -12,11 +13,11 @@ window.addEventListener('DOMContentLoaded', async () => {
     accountModal.showModal();
   }
 
-  accountForm.addEventListener('submit', (e) => {
+  accountForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const value = accountInput.value.trim();
     if (value) {
-      setAccount(value)
+      setAccount(value);
       accountModal.close();
     }
   });
