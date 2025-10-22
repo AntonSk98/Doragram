@@ -55,7 +55,7 @@ function tweakInstagram() {
       currentPage = Pages.INBOX;
     else if (path.startsWith(Pages.EDIT_ACCOUNT.description)) {
       currentPage = Pages.EDIT_ACCOUNT;
-    } else if (path.includes(Pages.MY_ACCOUNT.description)) {
+    } else if (path.toLowerCase().includes(Pages.MY_ACCOUNT.description.toLowerCase())) {
       currentPage = Pages.MY_ACCOUNT;
     }
   }
