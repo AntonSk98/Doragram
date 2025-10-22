@@ -6,13 +6,25 @@ How often have you caught yourself endlessly scrolling through Reels or suggeste
 
 ---
 
-## 📲 How to Install
+## 🐩 How to Install
+
 Download and install the `doragram.apk` file located here:  
 👉 [Download Doragram](release/doragram.apk)
 
 ---
 
-## 🌼 How to Use
+## 🐶 How to Use
+
+### First Launch
+
+On the first launch, the app will prompt you to enter your Instagram Username.  
+This is needed so Doragram can correctly match your navigation paths and block only the distracting pages.
+
+Made a typo? No worries - you can always clear the app data in your Android settings and launch the app again.
+
+![Doragram account prompt](/expose/doragram_first_launch.jpg)
+
+### Guidelines
 
 When you start Doragram, you’ll be greeted by Dora sitting peacefully in her garden.  
 If you feel like relaxing for a bit, you can pop the little bubbles with Dora’s face that appear around her. 😄
@@ -21,23 +33,23 @@ If you feel like relaxing for a bit, you can pop the little bubbles with Dora’
 
 Once you tap on the seated Dora, Instagram will load - but with a twist:
 
-- The **Reels** and **Explore** tabs are disabled.  
-- Even if someone shares a reel link with you, it won’t open.  
+- The **Reels** and **Explore** tabs are disabled.
+- Even if someone shares a reel link with you, it won’t open.
 - You still have full access to **your profile** and **conversations**, but that’s it.
 
 Everything is designed to help you value your time while keeping essential features intact.
 
-![Doragram main page](/expose/doragram_main_page.jpg)
----
+## ![Doragram main page](/expose/doragram_main_page.jpg)
 
-## ⏰ Still Feel Like Procrastinating?
+## 😴 Still Feel Like Procrastinating?
 
 Totally understandable - we’ve all been there!  
-If you *really* want to browse Instagram as usual, tap Dora’s image **20 times** to activate **Procrastination Mode**.  
+If you _really_ want to browse Instagram as usual, tap Dora’s image **20 times** to activate **Procrastination Mode**.
 
 In this mode:
-- Instagram opens in its original form (no tweaks or restrictions).  
-- The mode lasts only **5 minutes**.  
+
+- Instagram opens in its original form (no tweaks or restrictions).
+- The mode lasts only **5 minutes**.
 - After that, Instagram automatically closes, and you’ll find yourself back with Dora in her sunny garden. 🌞
 
 ![Activating procrastination mode](/expose/activate_procrastination.jpg)
@@ -46,16 +58,17 @@ In this mode:
 
 ![Procrastination mode main page](/expose/procrastination_page.png)
 
-
 ---
 
 ## 🧠 For the Curious (and Nerds)
 
 ### ⚙️ How It Works
+
 When you tap Dora, the app opens an internal browser that loads the **desktop version of Instagram**.  
 Doragram then injects custom **JavaScript** and **CSS** at runtime to hide unnecessary sections like Reels, Explore, and suggestions.
 
 ### 🔒 Is It Secure?
+
 Absolutely. Doragram doesn’t store or transmit any personal data.  
 There’s **no backend** - everything runs locally on your device.
 
@@ -64,6 +77,7 @@ There’s **no backend** - everything runs locally on your device.
 ## 💻 For Developers
 
 ### 🧩 Framework
+
 Doragram is built using the **[Capacitor](https://capacitorjs.com/)** framework.  
 The Instagram interface is loaded using **[cordova-plugin-inappbrowser](https://github.com/apache/cordova-plugin-inappbrowser)**.
 
@@ -82,15 +96,20 @@ Then open the project in Android Studio and run it on your device or emulator.
 More info here: [Capacitor Android Docs](https://capacitorjs.com/docs/android)
 
 ### 🧿 Generating App Icons
+
 To generate icons or splash screens:
+
 1. Place your image in the [resources](/resources/) folder.
 2. Run:
-``` bash
+
+```bash
 npx capacitor-assets generate
 ```
+
 More details: [Capacitor Assets Guide](https://capacitorjs.com/docs/guides/splash-screens-and-icons)
 
 ## ⚠️ Note
+
 Doragram relies on the desktop web version of Instagram, which comes with its natural limitations compared to the mobile app.
 
 <h2><strong>Made with ❤️ and a lot of Dora’s charm. Stay focused - Dora believes in you! 🐕✨</strong></h2>
